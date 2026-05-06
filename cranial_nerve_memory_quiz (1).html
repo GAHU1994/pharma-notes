@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12脳神経 記憶カード＆クイズ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0b0f1a;
+  --surface:#131929;
+  --surface2:#1a2235;
+  --surface3:#202b42;
+  --border:rgba(255,255,255,0.07);
+  --border2:rgba(255,255,255,0.13);
+  --text:#e4e8f5;
+  --muted:#7a85a3;
+  --hint:#4a5570;
+  --blue:#4d9ef5;
+  --blue-dim:rgba(77,158,245,0.12);
+  --blue-border:rgba(77,158,245,0.3);
+  --green:#3dd68c;
+  --green-dim:rgba(61,214,140,0.1);
+  --green-border:rgba(61,214,140,0.28);
+  --amber:#f5c842;
+  --amber-dim:rgba(245,200,66,0.1);
+  --amber-border:rgba(245,200,66,0.28);
+  --red:#f5614d;
+  --red-dim:rgba(245,97,77,0.12);
+  --red-border:rgba(245,97,77,0.3);
+  --sans:'Zen Kaku Gothic New',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:10px;
+  --radius-lg:14px;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh;padding:28px 16px 48px}
+.wrap{max-width:860px;margin:0 auto}
+
+header{margin-bottom:28px}
+.header-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:var(--mono);letter-spacing:.08em;color:var(--blue);background:var(--blue-dim);border:1px solid var(--blue-border);border-radius:5px;padding:3px 10px;margin-bottom:10px}
+h1{font-size:22px;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:4px}
+.subtitle{font-size:13px;color:var(--muted);font-family:var(--mono)}
+
+.tabs{display:flex;gap:6px;margin-bottom:20px;flex-wrap:wrap}
+.tab{padding:8px 18px;font-size:13px;font-family:var(--sans);font-weight:500;border-radius:8px;border:1px solid var(--border2);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .18s}
+.tab:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+.tab.active{background:var(--blue-dim);border-color:var(--blue-border);color:var(--blue)}
+
+/* ─── CARDS ─── */
+.legend{display:flex;gap:16px;margin-bottom:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.leg{display:flex;align-items:center;gap:6px}
+.leg-bar{width:14px;height:3px;border-radius:2px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(152px,1fr));gap:8px;margin-bottom:14px}
+.cn{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.cn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.cn.sense::before{background:var(--blue)}
+.cn.motor::before{background:var(--green)}
+.cn.mixed::before{background:var(--amber)}
+.cn:hover{border-color:var(--border2);background:var(--surface2);transform:translateY(-1px)}
+.cn.active{background:var(--surface3);border-color:var(--border2)}
+.cn.active.sense{border-color:var(--blue-border);background:var(--blue-dim)}
+.cn.active.motor{border-color:var(--green-border);background:var(--green-dim)}
+.cn.active.mixed{border-color:var(--amber-border);background:var(--amber-dim)}
+.cn-num{font-size:10px;font-family:var(--mono);color:var(--hint);margin-bottom:4px;letter-spacing:.04em}
+.cn-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.cn-func{font-size:11px;color:var(--muted);line-height:1.45}
+
+.detail-box{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 16px;font-size:13px;line-height:1.7;color:var(--muted);min-height:52px;transition:all .2s}
+.detail-box strong{color:var(--text);font-weight:700}
+
+/* ─── MNEMONIC ─── */
+.mnem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;margin-bottom:12px}
+.mnem-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px}
+.mnem-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mnem-item{display:flex;flex-direction:column;align-items:center;gap:3px}
+.mnem-kana{font-size:20px;font-weight:700;color:var(--blue);line-height:1}
+.mnem-label{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap}
+.mnem-dot{color:var(--hint);font-size:16px;padding-top:4px}
+
+.info-card{border-radius:var(--radius-lg);padding:16px 20px;margin-bottom:12px;border:1px solid}
+.info-card.blue{background:var(--blue-dim);border-color:var(--blue-border)}
+.info-card.amber{background:var(--amber-dim);border-color:var(--amber-border)}
+.info-card-title{font-size:13px;font-weight:700;margin-bottom:8px}
+.info-card.blue .info-card-title{color:var(--blue)}
+.info-card.amber .info-card-title{color:var(--amber)}
+.info-card-body{font-size:12px;line-height:1.9}
+.info-card.blue .info-card-body{color:#9dc8f7}
+.info-card.amber .info-card-body{color:#e8c96a}
+.big-highlight{font-size:15px;font-weight:700}
+
+/* ─── QUIZ ─── */
+.quiz-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.q-counter{font-size:12px;font-family:var(--mono);color:var(--muted)}
+.q-score{font-size:12px;font-family:var(--mono);color:var(--green)}
+.progress{height:5px;background:var(--surface3);border-radius:3px;margin-bottom:16px;overflow:hidden}
+.progress-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--green));transition:width .5s cubic-bezier(.4,0,.2,1)}
+
+.quiz-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.q-text{font-size:15px;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.6}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.opt{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius);padding:10px 14px;font-size:13px;font-family:var(--sans);color:var(--text);cursor:pointer;text-align:left;transition:all .15s;line-height:1.4}
+.opt:hover:not(:disabled){background:var(--surface3);border-color:rgba(255,255,255,0.2)}
+.opt:disabled{cursor:default}
+.opt.correct{background:var(--green-dim);border-color:var(--green-border);color:var(--green)}
+.opt.wrong{background:var(--red-dim);border-color:var(--red-border);color:var(--red)}
+.result-box{margin-top:14px;padding:12px 14px;border-radius:var(--radius);font-size:13px;line-height:1.7;min-height:44px}
+.result-box.ok{background:var(--green-dim);border:1px solid var(--green-border);color:#7de8b2}
+.result-box.ng{background:var(--red-dim);border:1px solid var(--red-border);color:#f99387}
+
+.quiz-footer{display:flex;gap:8px;margin-top:14px;align-items:center}
+.btn-next{background:var(--blue-dim);border:1px solid var(--blue-border);border-radius:8px;padding:8px 20px;font-size:13px;font-family:var(--sans);font-weight:500;color:var(--blue);cursor:pointer;transition:all .15s}
+.btn-next:hover{background:rgba(77,158,245,0.2)}
+.btn-reset{background:transparent;border:1px solid var(--border2);border-radius:8px;padding:8px 14px;font-size:13px;font-family:var(--sans);color:var(--muted);cursor:pointer;transition:all .15s}
+.btn-reset:hover{color:var(--text);border-color:rgba(255,255,255,0.2)}
+
+.final-banner{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:24px;text-align:center;margin-top:16px}
+.final-score{font-size:48px;font-weight:700;font-family:var(--mono);color:var(--green);line-height:1}
+.final-label{font-size:13px;color:var(--muted);margin-top:6px}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp .25s ease}
+
+@media(max-width:480px){
+  .opts{grid-template-columns:1fr}
+  .mnem-flow{gap:6px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="header-tag">第109回薬剤師国家試験 問011</div>
+  <h1>12脳神経 記憶カード＆クイズ</h1>
+  <div class="subtitle">cranial nerves I – XII</div>
+</header>
+
+<div class="tabs">
+  <button class="tab active" id="tab-card" onclick="setMode('card')">記憶カード</button>
+  <button class="tab" id="tab-mnemonic" onclick="setMode('mnemonic')">語呂合わせ</button>
+  <button class="tab" id="tab-quiz" onclick="setMode('quiz')">クイズ</button>
+</div>
+
+<!-- ─── CARD PANEL ─── -->
+<div id="panel-card" class="fade-in">
+  <div class="legend">
+    <div class="leg"><div class="leg-bar" style="background:var(--blue)"></div>感覚神経</div>
+    <div class="leg"><div class="leg-bar" style="background:var(--green)"></div>運動神経</div>
+    <div class="leg"><div class="leg-bar" style="background:var(--amber)"></div>混合神経</div>
+  </div>
+  <div class="grid" id="cn-grid"></div>
+  <div class="detail-box" id="detail-box">カードをクリックすると詳細が表示されます</div>
+</div>
+
+<!-- ─── MNEMONIC PANEL ─── -->
+<div id="panel-mnemonic" style="display:none" class="fade-in">
+  <div class="mnem-card">
+    <div class="mnem-title">「嗅いで・視て・動く・滑車の・三・外・顔」（I〜VII）</div>
+    <div class="mnem-flow">
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--blue)">嗅</div><div class="mnem-label">I 嗅神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--blue)">視</div><div class="mnem-label">II 視神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--green)">動</div><div class="mnem-label">III 動眼神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--green)">滑</div><div class="mnem-label">IV 滑車神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--amber)">三</div><div class="mnem-label">V 三叉神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--green)">外</div><div class="mnem-label">VI 外転神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--amber)">顔</div><div class="mnem-label">VII 顔面神経</div></div>
+    </div>
+  </div>
+
+  <div class="mnem-card">
+    <div class="mnem-title">「内・舌・迷・副・舌下まで」（VIII〜XII）</div>
+    <div class="mnem-flow">
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--blue)">内</div><div class="mnem-label">VIII 内耳神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--amber)">舌</div><div class="mnem-label">IX 舌咽神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--amber)">迷</div><div class="mnem-label">X 迷走神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--green)">副</div><div class="mnem-label">XI 副神経</div></div>
+      <div class="mnem-dot">·</div>
+      <div class="mnem-item"><div class="mnem-kana" style="color:var(--green)">舌下</div><div class="mnem-label">XII 舌下神経</div></div>
+    </div>
+  </div>
+
+  <div class="info-card blue">
+    <div class="info-card-title">感覚のみ — 3つだけ覚える（問011直結）</div>
+    <div class="info-card-body">
+      I（嗅覚）・II（視覚）・<span class="big-highlight">VIII（聴覚・平衡覚）</span><br>
+      「<strong>嗅いで・見て・聴く</strong>」の3つが純粋な感覚神経。それ以外はすべて運動か混合。
+    </div>
+  </div>
+
+  <div class="info-card amber">
+    <div class="info-card-title">薬学で頻出の脳神経障害</div>
+    <div class="info-card-body">
+      <strong>VII（顔面神経）</strong> 麻痺 → ベル麻痺・帯状疱疹<br>
+      <strong>VIII（内耳神経）</strong> 障害 → アミノグリコシド系・シスプラチン（内耳毒性）<br>
+      <strong>X（迷走神経）</strong> → ACE阻害薬の空咳（反射弓を介する）
+    </div>
+  </div>
+</div>
+
+<!-- ─── QUIZ PANEL ─── -->
+<div id="panel-quiz" style="display:none" class="fade-in">
+  <div class="quiz-header">
+    <span class="q-counter" id="q-counter">問題 1 / 8</span>
+    <span class="q-score" id="q-score">正解: 0</span>
+  </div>
+  <div class="progress"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+  <div class="quiz-box">
+    <div class="q-text" id="q-text"></div>
+    <div class="opts" id="opts"></div>
+    <div class="result-box" id="result-box" style="display:none"></div>
+  </div>
+  <div class="quiz-footer">
+    <button class="btn-next" id="btn-next" onclick="nextQ()" style="display:none">次の問題 →</button>
+    <button class="btn-reset" onclick="resetQuiz()">最初からやり直す</button>
+  </div>
+  <div class="final-banner" id="final-banner" style="display:none">
+    <div class="final-score" id="final-score">0</div>
+    <div class="final-label" id="final-label">/ 8問正解</div>
+  </div>
+</div>
+
+</div>
+<script>
+const nerves=[
+  {num:'I',  name:'嗅神経',   type:'sense',func:'嗅覚',              detail:'鼻腔の嗅上皮から嗅球へ。アルツハイマー病で早期に障害されることがある。'},
+  {num:'II', name:'視神経',   type:'sense',func:'視覚',              detail:'網膜から外側膝状体・視覚野へ。視野欠損の位置で病変部位がわかる。'},
+  {num:'III',name:'動眼神経', type:'motor',func:'眼球運動・瞳孔収縮',detail:'上直筋・下直筋・内直筋・下斜筋・上眼瞼挙筋を支配。瞳孔収縮（縮瞳）も担う。'},
+  {num:'IV', name:'滑車神経', type:'motor',func:'眼球運動（上斜筋）',detail:'上斜筋のみを支配。脳幹から出る最も細い脳神経。'},
+  {num:'V',  name:'三叉神経', type:'mixed',func:'顔面感覚・触覚・咀嚼',detail:'V1眼神経・V2上顎神経・V3下顎神経の3枝。三叉神経痛の原因となる。'},
+  {num:'VI', name:'外転神経', type:'motor',func:'眼球外転（外直筋）', detail:'外直筋のみを支配。麻痺すると内斜視になる。III・IV・VIが眼球運動を担う。'},
+  {num:'VII',name:'顔面神経', type:'mixed',func:'表情筋・前舌2/3味覚',detail:'表情筋支配＋涙腺・唾液腺の副交感。ベル麻痺・帯状疱疹で障害されやすい。'},
+  {num:'VIII',name:'内耳神経',type:'sense',func:'聴覚・平衡覚',      detail:'蝸牛神経（聴覚）＋前庭神経（平衡覚）の2枝。アミノグリコシド・シスプラチンで内耳毒性。問011の正解！'},
+  {num:'IX', name:'舌咽神経', type:'mixed',func:'後舌1/3味覚・嚥下', detail:'後舌1/3の味覚と咽頭反射に関与。頸動脈洞からの圧受容体情報も伝える。'},
+  {num:'X',  name:'迷走神経', type:'mixed',func:'内臓の自律神経支配', detail:'頸部から腹部まで広範に分布。ACE阻害薬の空咳は迷走神経の反射弓が関与。'},
+  {num:'XI', name:'副神経',   type:'motor',func:'胸鎖乳突筋・僧帽筋', detail:'胸鎖乳突筋（頭部回旋）と僧帽筋（肩挙上）を支配。'},
+  {num:'XII',name:'舌下神経', type:'motor',func:'舌の運動',           detail:'舌筋を支配。障害側に舌が偏位する。球麻痺の症状の一つ。'},
+];
+
+function buildCards(){
+  document.getElementById('cn-grid').innerHTML=nerves.map((n,i)=>`
+    <div class="cn ${n.type}" id="c${i}" onclick="showDetail(${i})">
+      <div class="cn-num">第 ${n.num} 脳神経</div>
+      <div class="cn-name">${n.name}</div>
+      <div class="cn-func">${n.func}</div>
+    </div>`).join('');
+}
+
+function showDetail(i){
+  document.querySelectorAll('.cn').forEach(c=>c.classList.remove('active'));
+  document.getElementById('c'+i).classList.add('active');
+  const n=nerves[i];
+  document.getElementById('detail-box').innerHTML=`<strong>第${n.num} ${n.name}</strong>（${['感覚','運動','混合'][['sense','motor','mixed'].indexOf(n.type)]}神経） — ${n.detail}`;
+}
+
+const questions=[
+  {q:'第VIII脳神経が主に伝える感覚は？',ans:'聴覚・平衡覚',opts:['嗅覚','視覚','聴覚・平衡覚','味覚'],ex:'内耳神経は蝸牛神経（聴覚）と前庭神経（平衡覚）の2枝からなる。問011の正解。'},
+  {q:'嗅覚を伝える脳神経は？',ans:'第I（嗅神経）',opts:['第I（嗅神経）','第II（視神経）','第VII（顔面神経）','第IX（舌咽神経）'],ex:'第I嗅神経は嗅上皮から嗅球への感覚のみの神経。'},
+  {q:'アミノグリコシド系が障害しやすい脳神経は？',ans:'第VIII（内耳神経）',opts:['第V（三叉神経）','第VII（顔面神経）','第VIII（内耳神経）','第X（迷走神経）'],ex:'内耳毒性により難聴・耳鳴り・めまいが生じる。シスプラチンも同様。'},
+  {q:'前舌2/3の味覚を伝える神経は？',ans:'第VII（顔面神経）',opts:['第V（三叉神経）','第VII（顔面神経）','第IX（舌咽神経）','第XII（舌下神経）'],ex:'鼓索神経（顔面神経の枝）が前舌2/3の味覚を伝える。後舌1/3は舌咽神経。'},
+  {q:'「感覚のみ」の脳神経に含まれないのは？',ans:'第VII（顔面神経）',opts:['第I（嗅神経）','第II（視神経）','第VII（顔面神経）','第VIII（内耳神経）'],ex:'感覚のみはI・II・VIIIの3つ。VIIは表情筋支配と味覚を持つ混合神経。'},
+  {q:'眼球の外直筋を支配する脳神経は？',ans:'第VI（外転神経）',opts:['第III（動眼神経）','第IV（滑車神経）','第VI（外転神経）','第V（三叉神経）'],ex:'外転神経麻痺では内斜視になる。III（動眼）・IV（滑車）・VI（外転）で眼球3神経。'},
+  {q:'ACE阻害薬の空咳に関与する脳神経は？',ans:'第X（迷走神経）',opts:['第VII（顔面神経）','第IX（舌咽神経）','第X（迷走神経）','第XI（副神経）'],ex:'ブラジキニン蓄積→迷走神経の咳反射弓を刺激→空咳。ACE阻害薬の有名な副作用。'},
+  {q:'第XII脳神経が支配する器官は？',ans:'舌（舌下神経）',opts:['顔面の表情筋','咀嚼筋','舌（舌下神経）','胸鎖乳突筋'],ex:'舌下神経は舌筋を支配。障害側に舌が偏位する。球麻痺の症状の一つ。'},
+];
+
+let qIdx=0,score=0,answered=false;
+
+function buildQuiz(){qIdx=0;score=0;answered=false;document.getElementById('final-banner').style.display='none';showQ();}
+
+function showQ(){
+  const q=questions[qIdx];
+  document.getElementById('q-counter').textContent=`問題 ${qIdx+1} / ${questions.length}`;
+  document.getElementById('q-score').textContent=`正解: ${score}`;
+  document.getElementById('progress-fill').style.width=Math.round(score/questions.length*100)+'%';
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('result-box').style.display='none';
+  document.getElementById('btn-next').style.display='none';
+  answered=false;
+  const opts=[...q.opts].sort(()=>Math.random()-.5);
+  document.getElementById('opts').innerHTML=opts.map(o=>`<button class="opt" onclick="answer(this,'${o.replace(/'/g,"\\'")}','${q.ans.replace(/'/g,"\\'")}','${q.ex.replace(/'/g,"\\'")}')">${o}</button>`).join('');
+}
+
+function answer(el,chosen,correct,ex){
+  if(answered)return;
+  answered=true;
+  const ok=chosen===correct;
+  if(ok)score++;
+  document.querySelectorAll('.opt').forEach(b=>{
+    b.disabled=true;
+    if(b.textContent===correct)b.classList.add('correct');
+    else if(b.textContent===chosen&&!ok)b.classList.add('wrong');
+  });
+  const rb=document.getElementById('result-box');
+  rb.style.display='block';
+  rb.className='result-box '+(ok?'ok':'ng');
+  rb.textContent=(ok?'正解！ ':'不正解。正解は「'+correct+'」。')+ex;
+  document.getElementById('q-score').textContent=`正解: ${score}`;
+  document.getElementById('progress-fill').style.width=Math.round(score/questions.length*100)+'%';
+  if(qIdx<questions.length-1){document.getElementById('btn-next').style.display='';}
+  else{
+    setTimeout(()=>{
+      const fb=document.getElementById('final-banner');
+      fb.style.display='block';
+      document.getElementById('final-score').textContent=score;
+      document.getElementById('final-label').textContent=`/ ${questions.length}問正解 — ${score===questions.length?'完璧！':score>=6?'あと少し！':'もう一度頑張ろう！'}`;
+    },600);
+  }
+}
+
+function nextQ(){qIdx++;showQ();}
+function resetQuiz(){buildQuiz();}
+
+function setMode(m){
+  ['card','mnemonic','quiz'].forEach(id=>{
+    document.getElementById('panel-'+id).style.display=id===m?'block':'none';
+    const t=document.getElementById('tab-'+id);
+    t.className='tab'+(id===m?' active':'');
+  });
+  if(m==='quiz')buildQuiz();
+}
+
+buildCards();
+</script>
+</body>
+</html>
